@@ -44,18 +44,26 @@ public class QLearningAgent extends RLAgent {
 			return this.getActionsLegales(e);
 		}
 		Set set = qTable.get(e).entrySet();
-		double max = -1;
 		Iterator iterator = set.iterator();
-		while (iterator.hasNext()) {
+		Double max;
+		if (iterator.hasNext()) {
 			Map.Entry<Action, Double> couple = (Map.Entry<Action, Double>) iterator.next();
-			if (couple.getValue() > max) {
-				resultat.clear();
-				max = couple.getValue();
-				resultat.add(couple.getKey());
+			max = couple.getValue();
+			resultat.add(couple.getKey());
+
+			while (iterator.hasNext()) {
+				couple = (Map.Entry<Action, Double>) iterator.next();
+				if (couple.getValue() > max) {
+					resultat.clear();
+					max = couple.getValue();
+					resultat.add(couple.getKey());
+				}
+				if (couple.getValue() == max) {
+					resultat.add(couple.getKey());
+				}
 			}
-			if (couple.getValue() == max) {
-				resultat.add(couple.getKey());
-			}
+		} else {
+			return this.getActionsLegales(e);
 		}
 		return resultat;
 	}
@@ -89,7 +97,7 @@ public class QLearningAgent extends RLAgent {
 	 */
 	@Override
 	public double getQValeur(Etat e, Action a) {
-		if (!qTable.isEmpty() && (qTable.get(e) != null) && (qTable.get(e).get(a)!=null)) {
+		if (!qTable.isEmpty() && (qTable.get(e) != null) && (qTable.get(e).get(a) != null)) {
 			return qTable.get(e).get(a);
 		}
 		return 0.0;
@@ -121,8 +129,8 @@ public class QLearningAgent extends RLAgent {
 	public void endStep(Etat e, Action a, Etat esuivant, double reward) {
 		// Q(e,a) = (1-alpha)Q(e,a) + (alpha [reward + gamma *
 		// getValeur(esuivant)])
-			Double d = (1 - alpha) * getQValeur(e, a) + alpha * (reward + gamma * getValeur(esuivant));
-			this.setQValeur(e, a, d);
+		Double d = (1 - alpha) * getQValeur(e, a) + alpha * (reward + gamma * getValeur(esuivant));
+		this.setQValeur(e, a, d);
 	}
 
 	@Override

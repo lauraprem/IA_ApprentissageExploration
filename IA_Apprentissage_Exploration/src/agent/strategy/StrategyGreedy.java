@@ -34,12 +34,13 @@ public class StrategyGreedy extends StrategyExploration {
 	public Action getAction(Etat _e) {
 		List<Action> actions = agent.getActionsLegales(_e);
 		List<Action> bestActions = agent.getPolitique(_e);
+		if (actions.isEmpty()) {
+			return null;
+		}
 		if (rand.nextDouble() <= epsilon || bestActions.isEmpty()) {
 			return actions.get(rand.nextInt(actions.size()));
-			//TODO java.lang.IllegalArgumentException: bound must be positive
 		}
 
-		
 		return bestActions.get(rand.nextInt(bestActions.size()));
 	}
 
